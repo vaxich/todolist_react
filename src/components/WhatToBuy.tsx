@@ -9,11 +9,12 @@ export type whatToBuyType = {  //тип основного массива
 
 export type WhatToBuyPropsType = { //тип пропсов
     title: string
-    buy: Array<whatToBuyType>,
+    //buy: Array<whatToBuyType>,
     addBuy: (title: string) => void
     removeBuy: (id: string) => void
     changeFilterBuy: (value: FilterValuesType) => void
     whatToBuy: Array<whatToBuyType> //основной массив из пропсов
+    filter: FilterValuesType
 }
 
 export function WhatToBuy(props: WhatToBuyPropsType) {
@@ -36,18 +37,13 @@ export function WhatToBuy(props: WhatToBuyPropsType) {
         }
      }
     //мапим массив whatToBuy. каждый элемент массива buy рисуем в li-шке
+
     const whatToBuyComponent = props.whatToBuy.map(buy => {
         return (
-            <li><input type="checkbox" checked={buy.isDone} /><span>{buy.title}</span> <button onClick={() => { props.removeBuy(buy.id) }} > x</button> </li>//на onClik запускаем функцию removeBuy. в параметрах передаём каждый элемент массива buy
-
-
+            <li><input type="checkbox" checked={buy.isDone} /><span>{buy.title}</span> <button onClick={() => { props.removeBuy(buy.id) }} > x</button> </li>//на onClik запускаем функцию removeBuy. в параметрах передаём  элемент массива buy на который нажали
         )
-
     })
-
-
     return (
-
         <div>
             <h1>{props.title}</h1>
             <div>
@@ -63,9 +59,9 @@ export function WhatToBuy(props: WhatToBuyPropsType) {
 
             </ul>
             <div>
-                <button onClick={setAllFilter}>All</button>
-                <button onClick={setActiveFilter}>active</button>
-                <button onClick={setCompletedFilter}>completed</button>
+                <button className={props.filter === 'all' ? "active-filter" : ""} onClick={setAllFilter}>All</button>
+                <button className={props.filter === 'active' ? "active-filter" : ""} onClick={setActiveFilter}>active</button>
+                <button className={props.filter === 'completed' ? "active-filter" : ""} onClick={setCompletedFilter}>completed</button>
 
             </div>
         </div>
