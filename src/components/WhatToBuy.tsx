@@ -1,6 +1,7 @@
 import React, {ChangeEvent, MouseEventHandler, KeyboardEvent, useState} from "react";
 import { FilterValuesType } from "../App";
 
+
 export type whatToBuyType = {  //тип основного массива
     id: string
     title: string
@@ -15,20 +16,29 @@ export type WhatToBuyPropsType = { //тип пропсов
     changeFilterBuy: (value: FilterValuesType) => void
     whatToBuy: Array<whatToBuyType> //основной массив из пропсов
     filter: FilterValuesType
+    changeStatusBuy:(Id:string, isDone:boolean) => void
 }
 
 export function WhatToBuy(props: WhatToBuyPropsType) {
 
     const [title, setTitle] = useState<string>("") // ХУК инпута
+    const [errorBuy, setErrorBuy] = useState<string | null>("")
 
     const addBuyClick = () => { //добавить покупку
-        props.addBuy(title)
-        setTitle("")
+        if(title.trim() !== "") {
+            props.addBuy(title.trim())
+            setTitle("")
+        } else {
+            setErrorBuy("Обязательно к заполнению")
+        }
+
+
 
     }
     const setAllFilter =() => props.changeFilterBuy("all")
     const setActiveFilter = () => props.changeFilterBuy("active")
     const setCompletedFilter =() => props.changeFilterBuy("completed")
+
 
 
     const onKeyPressAddBuy =(e: KeyboardEvent<HTMLInputElement>) => {  //добавляем покупки при нажатии Энтер
@@ -40,7 +50,7 @@ export function WhatToBuy(props: WhatToBuyPropsType) {
 
     const whatToBuyComponent = props.whatToBuy.map(buy => {
         return (
-            <li><input type="checkbox" checked={buy.isDone} /><span>{buy.title}</span> <button onClick={() => { props.removeBuy(buy.id) }} > x</button> </li>//на onClik запускаем функцию removeBuy. в параметрах передаём  элемент массива buy на который нажали
+            <li className={buy.isDone ?"is-done" : ""}><input type="checkbox" checked={buy.isDone} onChange={ (e)=> props.changeStatusBuy(buy.id, buy.isDone)}/><span>{buy.title}</span> <button onClick={() => { props.removeBuy(buy.id) }} > x</button> </li>//на onClik запускаем функцию removeBuy. в параметрах передаём  элемент массива buy на который нажали
         )
     })
     return (
@@ -48,11 +58,14 @@ export function WhatToBuy(props: WhatToBuyPropsType) {
             <h1>{props.title}</h1>
             <div>
                 <input
+                    className={errorBuy ? "error" : ""}
                     value={title} //значение инпута
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>setTitle((e.currentTarget.value))}// при изменении записываем значение инпута
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setTitle((e.currentTarget.value))  }// при изменении записываем значение инпута// setErrorBuy("")
                     onKeyPress= {onKeyPressAddBuy}
                 />
                 <button onClick={addBuyClick }>+</button>
+                { errorBuy && <div className="error-message"> Обязательно к заполнению</div>}
             </div>
             <ul>
                 {whatToBuyComponent}

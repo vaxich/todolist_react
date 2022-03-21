@@ -60,7 +60,7 @@ function App() {
 
 // КОМПОНЕНТА WHAT TO BUY //////
 // массив "что купить"
-    let [whatToBuy, setBuy] = useState<Array<whatToBuyType>>([
+    const [whatToBuy, setBuy] = useState<Array<whatToBuyType>>([
         {id: v1(), title: "Картошка", isDone: true},
         {id: v1(), title: "Маркошка", isDone: true},
         {id: v1(), title: "Капуста", isDone: false},
@@ -95,8 +95,22 @@ function App() {
         const newBuy = {id: v1(), title: title, isDone: false}
         const updateNewBuy = [newBuy, ...whatToBuy];
         setBuy(updateNewBuy)
-        console.log(updateNewBuy)
+    }
 
+////// изменить статус чекбокса покупки
+    const changeStatusBuy =(Id:string , isDone:boolean)=> {
+        let updatedBuy = whatToBuy.map(
+            buy => {
+                if (buy.id === Id) {
+                    const copyBuy = {...buy}
+                    copyBuy.isDone = !isDone
+                    return copyBuy
+                } else {
+                    return buy
+                }
+                }
+        )
+        setBuy(updatedBuy);
     }
 
 
@@ -157,6 +171,7 @@ function App() {
 
                 filter={filterBuy}
                 changeFilterBuy={changeFilterBuy}
+                changeStatusBuy={changeStatusBuy}
             />
             <FilmList //отрисовываем компоненту WhatToBuy
                 title="Что помотреть" //передаём заголовок

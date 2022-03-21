@@ -27,7 +27,7 @@ export function FilmList(props:filmListPropsType) {
     const visiblFilm = props.filteredFilm.map( film => {
         return (
             <li key={film.id}>
-                <input type="checkbox" checked={film.isDone}/>
+                <input className={film.isDone ?"is-done" : ""} type="checkbox" checked={film.isDone} />
                 <span>{film.title}</span>
                 <button onClick={ ()=> {props.deleteFilm(film.id)} }>удалить</button>
             </li> //на onClik запускаем функцию deleteFilm. в параметрах передаём  элемент массива filmList на который нажали
