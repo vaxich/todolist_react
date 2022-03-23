@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
 import { TasksType, Todolist } from './components/Todolist';
-import { WhatToBuy, whatToBuyType } from './components/WhatToBuy';
+
 import { useState } from 'react';
 import { v1 } from 'uuid';
-import { FilmList, filmListType } from "./components/filmList";
+import { AddItemForm } from './components/addItemForm';
+
 
 export type FilterValuesType = "all" | "active" | "completed";
 type TodoListType = {
@@ -12,21 +13,26 @@ type TodoListType = {
     title: string
     filter: FilterValuesType
 }
+type TasksStateType = {
+    [key:string]: Array<TasksType>
+}
 
 function App() {
 
     // КОМПОНЕНТА TODOLIST ////
     let todolistId1 = v1();
     let todolistId2 = v1();
-
+    let todolistId3 = v1();
+//state тудулистов
     let [todolists, setTodolist] = useState<Array<TodoListType>>([
         { id: todolistId1, title: "What to learn", filter: "active" },
-        { id: todolistId2, title: "What to buy",   filter: "completed" }
+        { id: todolistId2, title: "What to buy",   filter: "completed" },
+        { id: todolistId3, title: "What to see",   filter: "all" }
     ]);
-    // массив "что учить"
     
-
-    let [tasksObj, setTasks] = useState({
+    
+// state начальный
+    let [tasksObj, setTasks] = useState<TasksStateType>({
         [todolistId1]: [
             { id: v1(), title: "HTML&CSS", isDone: true },
         { id: v1(), title: "JS", isDone: true },
@@ -40,13 +46,20 @@ function App() {
              {id: v1(), title: "Капуста", isDone: false},
              {id: v1(), title: "Пиво", isDone: false},
              {id: v1(), title: "Хлеб", isDone: false}
+        ],
+        [todolistId3]: [
+            {id: v1(), title: "Териминатор", isDone: true},
+             {id: v1(), title: "Человек паук", isDone: true},
+             {id: v1(), title: "Форсаж", isDone: false},
+             {id: v1(), title: "Железный человек", isDone: false},
+             {id: v1(), title: "Тор", isDone: true}
         ]
     });
     // фильтрация "что учить"
     let [filter, setFilter] = useState<FilterValuesType>("all");
         
     const changeFilter = (value: FilterValuesType, TodolistID: string) => {
-        let todolist = todolists.find( (tl:any) => tl.id === TodolistID);
+        let todolist:any = todolists.find( (tl:any) => tl.id === TodolistID);
         if(todolist) {
             todolist.filter = value;
             setTodolist([...todolist])
@@ -71,6 +84,7 @@ let removeTodolist =(TodolistID:string) => {
         let task = { id: v1(), title: title, isDone: false };
         let tasks = tasksObj[TodolistID];
         let newTasks = [task, ...tasks];
+        tasksObj[TodolistID] = newTasks;
         setTasks({...tasksObj});
     }
     // изменить статус чек-бокса
@@ -83,98 +97,26 @@ let removeTodolist =(TodolistID:string) => {
         }
         
     }
+const addTodolist =(title:string) => {
+    let todolist:TodoListType = {
+        id: v1(),
+        filter: "all",
+        title: title
+    }
+    setTodolist([todolist, ...todolists]);
+    setTasks({...tasksObj, 
+                [todolist.id]: []
+    });
+}
+    
 
-    // // КОМПОНЕНТА WHAT TO BUY //////
-    // // массив "что купить"
-    //     const [whatToBuy, setBuy] = useState<Array<whatToBuyType>>([
-    //         {id: v1(), title: "Картошка", isDone: true},
-    //         {id: v1(), title: "Маркошка", isDone: true},
-    //         {id: v1(), title: "Капуста", isDone: false},
-    //         {id: v1(), title: "Пиво", isDone: false},
-    //         {id: v1(), title: "Хлеб", isDone: false},
-    //     ]);
-
-
-    //     // удалить "что купить"
-    //     const removeBuy = (id: string) => { //функция удаления покупок
-
-    //         let notRemovedBuy = whatToBuy.filter(buy => buy.id !== id) // если ИД не равна ИД на которую нажали - запиываем в новый массив
-    //         setBuy(notRemovedBuy);//отфильтрованый массив передаём в ХУК, который обновляем основной массив
-    //     }
-
-    //     ///фильтрация "что купить"
-    //     let [filterBuy, setFilterBuy] = useState<FilterValuesType>("all");
-    //     let filterStatusBuy = whatToBuy;
-
-    //     if (filterBuy === "active") {
-    //         filterStatusBuy = whatToBuy.filter(buy => !buy.isDone);
-
-    //     }
-    //     if (filterBuy === "completed") {
-    //         filterStatusBuy = whatToBuy.filter(buy => buy.isDone);
-    //     }
-    //     const changeFilterBuy = (value: FilterValuesType) => {
-    //         setFilterBuy(value);
-    //     }
-    //     // добавление покупки
-    //     const addBuy = (title: string) => {
-    //         const newBuy = {id: v1(), title: title, isDone: false}
-    //         const updateNewBuy = [newBuy, ...whatToBuy];
-    //         setBuy(updateNewBuy)
-    //     }
-
-    // ////// изменить статус чекбокса покупки
-    //     const changeStatusBuy =(Id:string , isDone:boolean)=> {
-    //         let updatedBuy = whatToBuy.map(
-    //             buy => {
-    //                 if (buy.id === Id) {
-    //                     const copyBuy = {...buy}
-    //                     copyBuy.isDone = !isDone
-    //                     return copyBuy
-    //                 } else {
-    //                     return buy
-    //                 }
-    //                 }
-    //         )
-    //         setBuy(updatedBuy);
-    //     }
-
-
-    //     // КОМПОНЕНТА FILMLIST ////
-    //     // массив "что посмотреть"
-    //     let [filmList, setFilm] = useState<Array<filmListType>>([
-    //         {id: v1(), title: "Териминатор", isDone: true},
-    //         {id: v1(), title: "Человек паук", isDone: true},
-    //         {id: v1(), title: "Форсаж", isDone: false},
-    //         {id: v1(), title: "Железный человек", isDone: false},
-    //         {id: v1(), title: "Тор", isDone: true},
-    //     ]);
-    // //удаление фильма
-    //     const deleteFilm = (id: string) => { //удаление фильма
-    //         const newArrayFilm = filmList.filter(film => film.id !== id)
-    //         setFilm(newArrayFilm)
-    //     }
-
-    //     // фильтр фильма
-    //     let [filterFilm, setFilterFilm] = useState<FilterValuesType>("all");
-
-    //     let filteredFilm = filmList;
-
-    //     if (filterFilm === "active") {
-    //         filteredFilm = filmList.filter(film => !film.isDone);
-
-    //     }
-    //     if (filterFilm === "completed") {
-
-    //         filteredFilm = filmList.filter(film => film.isDone);
-    //     }
-    //     const changeFilterFilm = (value: FilterValuesType) => {
-    //         setFilterFilm(value);
-    //     }
-    ///
 
     return (
         <div className="App">
+            <AddItemForm 
+            addItem={addTodolist}
+            
+            />
             {
                 todolists.map((tl:any) => {
                     let tasksForTodolist = tasksObj[tl.id];
@@ -197,35 +139,14 @@ let removeTodolist =(TodolistID:string) => {
 
 
                         changeTaskStatus={changeStatus}
-                        filter={filter}
-                        changeFilter={setFilter}
+                        filter={tl.filter}
+                        changeFilter={changeFilter}
                     />
                 })
             }
 
 
-            {/* <WhatToBuy //отрисовываем компоненту WhatToBuy
-                title="Что купить" //передаём заголовок
-                whatToBuy={filterStatusBuy} //передаём основной массив
-
-                removeBuy={removeBuy} //передаём функцию удаления
-
-                addBuy={addBuy}
-
-                filter={filterBuy}
-                changeFilterBuy={changeFilterBuy}
-                changeStatusBuy={changeStatusBuy}
-            />
-            <FilmList //отрисовываем компоненту WhatToBuy
-                title="Что помотреть" //передаём заголовок
-                filteredFilm={filteredFilm}// отфитрованый массив
-
-                deleteFilm={deleteFilm}//удалить фильм
-
-                filter={filterFilm}
-                changeFilterFilm={changeFilterFilm}//сменить фильтр
-            /> */}
-
+           
 
         </div>
     );

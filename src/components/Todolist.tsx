@@ -1,6 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent } from 'react';
 import { useState } from 'react';
 import { FilterValuesType } from '../App';
+import { AddItemForm } from './addItemForm';
 
 
 export type TasksType = {
@@ -24,28 +25,6 @@ type PropsType ={
 
 export const Todolist =(props:PropsType)=> {
 
-    let [title, setTitle] = useState("");
-    let [error, setError] = useState<string | null>(null);
-    
-    const addTask =()=> {
-        if (title.trim() !== "") {
-            props.addTask(title.trim(), props.id)
-            setTitle("");
-        } else {
-            setError("Обязательно к заполнению");
-        }
-        
-    }
-    
-    const onNewTitleChangeHeadler =(e: ChangeEvent<HTMLInputElement>)=> {
-        setTitle(e.currentTarget.value)
-    }
-
-    const onKeyPressHandler =(e:KeyboardEvent<HTMLInputElement>)=> {
-        setError(null);
-        if (e.charCode ===13) {addTask();}
-    }
-
     const onAllClickHandler = ()=> {
         props.changeFilter("all", props.id)
     }
@@ -59,17 +38,15 @@ export const Todolist =(props:PropsType)=> {
 let removeTodolist =() => {
     props.removeTodolist(props.id);
 }
+const addTask = (title:string) => {
+    props.addTask(title, props.id)
+}
     return(
         <div>
                 <h1>{props.title} <button onClick={removeTodolist}>X</button></h1>
-                <div>
-                    <input value={title} 
-                    onChange={onNewTitleChangeHeadler}
-                    onKeyPress={onKeyPressHandler }
-                    className={error ? "error" : ""}                    />
-                    <button onClick={ addTask}>+</button>
-                    { error && <div className="error-message"> Обязательно к заполнению</div>}
-                </div>
+                <AddItemForm 
+                addItem={addTask}
+                />
                 <ul>
                     {
                     props.tasks.map(t => {
@@ -96,4 +73,5 @@ let removeTodolist =() => {
         </div>
     )
 }
+
 
