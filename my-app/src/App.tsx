@@ -9,7 +9,7 @@ import { Menu } from '@mui/icons-material';
 
 
 export type FilterValuesType = "all" | "active" | "completed";
-type TodoListType = {
+export type TodoListType = {
     id: string
     title: string
     filter: FilterValuesType
@@ -57,7 +57,7 @@ function App() {
         ]
     });
     // фильтрация "что учить"
-    let [filter, setFilter] = useState<FilterValuesType>("all");
+    
 
     const changeFilter = (value: FilterValuesType, TodolistID: string) => {
         let todolist = todolists.find((tl: any) => tl.id === TodolistID);
