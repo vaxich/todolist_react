@@ -1,7 +1,13 @@
 import { FilterValuesType } from './../App';
 import { v1 } from "uuid";
 import { TodoListType } from "../App";
-import { AddTodolistAC, ChangeTodolistFilterAC, ChangeTodolistFilterActionType, ChangeTodolistTitleAC, RemoveTodolistAC, todolistsReduser } from "./todolists-reduser";
+import {
+    AddTodolistAC,
+    ChangeTodolistFilterAC,
+    ChangeTodolistTitleAC,
+    removeTodolistAC,
+    todolistsReduser
+} from "./todolists-reduser";
 
 
 
@@ -11,7 +17,7 @@ test(`correct todolist should be removed`, () => {
     let todolistId2 = v1();
     let todolistId3 = v1();
 
-    let action = RemoveTodolistAC(todolistId1);
+    let action = removeTodolistAC(todolistId1);
 
     const startState:Array<TodoListType> = [
         { id: todolistId1, title: "What to learn", filter: "active" },
