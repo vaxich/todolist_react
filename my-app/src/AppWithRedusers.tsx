@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useReducer} from 'react';
 import './App.css';
 import { TasksType, Todolist } from './components/Todolist';
 import { useState } from 'react';
@@ -6,6 +6,15 @@ import { v1 } from 'uuid';
 import { AddItemForm } from './components/addItemForm';
 import { AppBar, Container, Grid, IconButton, Paper, Toolbar, Typography } from '@mui/material';
 import { Menu } from '@mui/icons-material';
+import {
+    AddTodolistAC,
+    ChangeTodolistFilterAC,
+    ChangeTodolistTitleAC,
+    removeTodolistAC,
+    todolistsReduser
+} from "./state/todolists-reduser";
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, tasksReduser} from "./state/tasks-reduser";
+import any = jasmine.any;
 
 
 export type FilterValuesType = "all" | "active" | "completed";
@@ -18,14 +27,14 @@ export type TasksStateType = {
     [key: string]: Array<TasksType>
 }
 
-function App() {
+function AppWithRedusers() {
 
     // КОМПОНЕНТА TODOLIST ////
     let todolistId1 = v1();
     let todolistId2 = v1();
     let todolistId3 = v1();
     //state тудулистов
-    let [todolists, setTodolist] = useState<Array<TodoListType>>([
+    let [todolists, dispatchToTodolistsReducer] = useReducer( todolistsReduser , [
         { id: todolistId1, title: "What to learn", filter: "active" },
         { id: todolistId2, title: "What to buy", filter: "completed" },
         { id: todolistId3, title: "What to see", filter: "all" }
@@ -33,7 +42,7 @@ function App() {
 
 
     // state начальный
-    let [tasksObj, setTasks] = useState<TasksStateType>({
+    let [tasksObj, dispatchToTaskReduser] = useReducer( tasksReduser, {
         [todolistId1]: [
             { id: v1(), title: "HTML&CSS", isDone: true },
             { id: v1(), title: "JS", isDone: true },
@@ -59,72 +68,47 @@ function App() {
     // фильтрация "что учить"
     
 
-    const changeFilter = (TodolistID: string, value: FilterValuesType ) => {
-        let todolist = todolists.find((tl: any) => tl.id === TodolistID);
-        if (todolist) {
-            todolist.filter = value;
-            setTodolist([...todolists])
-        }
+    const changeFilter = ( TodolistID: string, filter: FilterValuesType) => {
+        const action = ChangeTodolistFilterAC(TodolistID, filter )
+        dispatchToTodolistsReducer(action)
     }
     // удалить "что учить"
-    const removeTask = (id: any, TodolistID: string) => {
-        let tasks = tasksObj[TodolistID];
-        let filteredTasks = tasks.filter(t => t.id != id);
-        tasksObj[TodolistID] = filteredTasks;
-        setTasks({ ...tasksObj });
+    const removeTask = (id: string, TodolistID: string) => {
+        const action = removeTaskAC(id, TodolistID)
+        dispatchToTaskReduser(action)
+
 
     }
     let removeTodolist = (TodolistID: string) => {
-        let filteredTodolist = todolists.filter(tl => tl.id !== TodolistID)
-        setTodolist(filteredTodolist);
-        delete tasksObj[TodolistID];
-        setTasks({ ...tasksObj });
+        const action = removeTodolistAC(TodolistID)
+        dispatchToTaskReduser(action)
+        dispatchToTodolistsReducer(action)
     }
 
     const changeTodolistTitle = (id: string, newTitle: string) => {
-        const todolist = todolists.find(tl => tl.id === id)
-        if (todolist) {
-            todolist.title = newTitle;
-            setTodolist([...todolists])
-        }
+        const action = ChangeTodolistTitleAC(id, newTitle)
+        dispatchToTodolistsReducer(action)
     }
 
     // добавить "что учить"
     const addtask = (title: string, TodolistID: string) => {
-        let task = { id: v1(), title: title, isDone: false };
-        let tasks = tasksObj[TodolistID];
-        let newTasks = [task, ...tasks];
-        tasksObj[TodolistID] = newTasks;
-        setTasks({ ...tasksObj });
+        const action = addTaskAC(title, TodolistID )
+        dispatchToTaskReduser(action)
+
     }
     // изменить статус чек-бокса
     const changeStatus = (taskId: string, isDone: boolean, TodolistID: string) => {
-        let tasks = tasksObj[TodolistID];
-        let task = tasks.find(t => t.id === taskId);  // находим ту задачу на которой поменяли чек-бокс
-        if (task) {
-            task.isDone = !task.isDone // меняем статус чек-бокса на противоположный
-            setTasks({ ...tasksObj }); //меняем
-        }
+        const action = changeTaskStatusAC(taskId, isDone, TodolistID)
+        dispatchToTaskReduser(action)
     }
     const changeTaskTitle = (taskId: string, newTitle: string, TodolistID: string) => {
-        let tasks = tasksObj[TodolistID];
-        let task = tasks.find(t => t.id === taskId);  // находим ту задачу на которой поменяли чек-бокс
-        if (task) {
-            task.title = newTitle // меняем статус чек-бокса на противоположный
-            setTasks({ ...tasksObj }); //меняем
-        }
+        const action = changeTaskTitleAC(taskId, newTitle, TodolistID)
+        dispatchToTaskReduser(action)
     }
     const addTodolist = (title: string) => {
-        let todolist: TodoListType = {
-            id: v1(),
-            filter: "all",
-            title: title
-        }
-        setTodolist([todolist, ...todolists]);
-        setTasks({
-            ...tasksObj,
-            [todolist.id]: []
-        });
+        const action = AddTodolistAC(title)
+        dispatchToTaskReduser(action)
+        dispatchToTodolistsReducer(action)
     }
 
 
@@ -189,4 +173,4 @@ function App() {
     );
 }
 
-export default App;
+export default AppWithRedusers;

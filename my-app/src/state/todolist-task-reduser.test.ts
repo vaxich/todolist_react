@@ -9,7 +9,7 @@ test('ids should be equals', () => {
     const action = AddTodolistAC("new todolist");
 
     const endTasksState = tasksReduser(startTasksState, action)
-    const endTodolistsState = todolistsReduser(startTodolistsState, action)
+    const endTodolistsState = todolistsReduser(startTodolistsState,action)
 
     const keys = Object.keys(endTasksState);
     const idFromTasks = keys[0];
