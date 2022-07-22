@@ -32,6 +32,7 @@ function AppWithRedux() {
 
     const todolists =  useSelector<AppRootStateType, TodoListType[]>( state => state.todolists)
     const tasks =  useSelector<AppRootStateType, TasksStateType>( state => state.tasks)
+    console.log( tasks)
 
 
     // фильтрация
@@ -110,7 +111,7 @@ function AppWithRedux() {
                         key={tl.id}
                         id={tl.id}
                         title={tl.title}   //передаём заголовок
-                        tasks={tasksForTodolist} //передаём основной массив
+                        tasks={allTodolistTasks} //передаём основной массив
                         removeTodolist={removeTodolist}
                         removeTask={removeTask} //передаём функцию удаления
                         addTask={addtask} //передаём функцию добавления

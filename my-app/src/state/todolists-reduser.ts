@@ -34,8 +34,7 @@ export const todolistsReduser = (state:TodoListType[] = initialState, action: Ac
         }
 
         case `ADD-TODOLIST`: {
-            console.log("todolist")
-            console.log(action)
+
             return [
                 {
                     id:action.todolistId,

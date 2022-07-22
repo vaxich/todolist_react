@@ -47,6 +47,7 @@ export const tasksReduser =(state:TasksStateType = initialState, action:ActionsT
             const stateCopy = {...state}
 
             const tasks = stateCopy[action.todolistID]
+
             const newTask = {
                 id: v1(),
                 title: action.title,
@@ -91,9 +92,7 @@ export const tasksReduser =(state:TasksStateType = initialState, action:ActionsT
         }
         case "ADD-TODOLIST": {
             const stateCopy = {...state}
-            console.log(action)
             stateCopy[action.todolistId] = []
-            console.log("task")
             return stateCopy
         }
         case "REMOVE-TODOLIST": {

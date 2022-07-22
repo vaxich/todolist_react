@@ -13,7 +13,7 @@ type TaskPropsType = {
     todolistId: string
 }
 export const Task = React.memo ( (props: TaskPropsType) => {
-
+    console.log(props)
     const onRemoveHandler = () => {
         props.removeTask(props.task.id, props.todolistId)
     }
