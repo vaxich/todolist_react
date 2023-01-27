@@ -1,7 +1,8 @@
 {
-  "name": "it-incubator-todolist-ts",
+  "name": "todolist-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://vaxich.github.io/todolist_react",
   "dependencies": {
     "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
@@ -18,6 +19,7 @@
     "@types/uuid": "^7.0.3",
     "axios": "^0.19.2",
     "formik": "^2.2.9",
+    "gh-pages": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
@@ -29,6 +31,8 @@
     "uuid": "^8.0.0"
   },
   "scripts": {
+    "deploy": "gh-pages-deploy",
+    "clean-source": "rimraf README.md src webroot package.json",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
